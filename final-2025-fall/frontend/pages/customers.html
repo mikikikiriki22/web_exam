@@ -11,7 +11,7 @@
     </button>
   </div>
   <br />
-  <select class="form-select" id="customers-list"></select>
+  <select class="form-select" id="customers-list" onchange="getMeals(this.value)"></select>
   <hr />
   <div>
     <table class="table table-striped" id="customer-meals">
@@ -23,21 +23,6 @@
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <td>Meet fingers</td>
-          <td>Ilidzanka</td>
-          <td>2024-05-28</td>
-        </tr>
-        <tr>
-          <td>Beef</td>
-          <td>AEMS</td>
-          <td>2024-05-29</td>
-        </tr>
-        <tr>
-          <td>Corba</td>
-          <td>Domaca</td>
-          <td>2024-05-30</td>
-        </tr>
       </tbody>
     </table>
   </div>
@@ -127,6 +112,8 @@
 </script>
 
 <script>
+
+  //1.
   function getCustomers() {
     $.ajax({
       url: '../backend/rest/customers',
@@ -159,4 +146,27 @@
 
 
 
+  //2.
+  function getMeals(customer_id) {
+    $.ajax({
+      url: '../backend/rest/customer/meals/' + customer_id,
+      method: 'GET',
+      success: function(data) {
+
+        output = '';
+
+        data.forEach(meal => {
+            output += '<tr><td>' + meal.food_name + '</td><td>' + meal.food_brand + '</td><td>' + meal.meal_date + '</td></tr>'
+        })
+
+        const mealTable = document.querySelector("#customer-meals tbody");
+        mealTable.innerHTML = output;
+
+      },
+      error: function(errorThrown) {
+          console.log(errorThrown);
+          $("#portofioItems").html("<p>There was an error loading the data. Please try again later.</p>");
+      }
+    })
+  }
 </script>
